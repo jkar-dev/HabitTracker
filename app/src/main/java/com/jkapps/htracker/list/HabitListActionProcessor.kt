@@ -5,15 +5,16 @@ import com.jkapps.htracker.domain.entity.Habit
 import com.jkapps.htracker.list.HabitListAction.*
 import com.jkapps.htracker.list.HabitListResult.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class HabitListActionProcessor(private val repository: HabitRepository) {
+class HabitListActionProcessor @Inject constructor(private val repository: HabitRepository) {
 
     suspend fun transformActionToResult(action: HabitListAction): Flow<HabitListResult> {
         return when (action) {
-            is OpenAddEditDialog -> flow { OpenDialog }
-            is CloseAddEditDialog -> flow { CloseDialog }
+            is OpenAddEditDialog -> flowOf(OpenDialog)
+            is CloseAddEditDialog -> flowOf(CloseDialog)
             is EffectOnHabits -> effectOnHabits(action)
         }
     }

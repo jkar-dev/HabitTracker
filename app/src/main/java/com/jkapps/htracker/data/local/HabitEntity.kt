@@ -7,9 +7,9 @@ import com.jkapps.htracker.domain.entity.Habit
 @Entity(tableName = "habits")
 data class HabitEntity(
     @PrimaryKey(autoGenerate = true)
-    val id : Int,
+    val id : Int? = null,
     val title : String,
     val subtitle : String,
     val timesPerDay : Int,
-    val doneUnits : Int
+    var doneUnits : Int
 )

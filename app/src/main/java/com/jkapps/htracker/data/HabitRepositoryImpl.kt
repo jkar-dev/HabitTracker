@@ -9,8 +9,13 @@ import kotlinx.coroutines.flow.*
 
 class HabitRepositoryImpl(private val habitDao: HabitDao) : HabitRepository {
 
+    private var isNewDay = flowOf(false)
+
     override suspend fun getAllHabits(): Flow<List<Habit>> {
-        return habitDao.getAllHabits().map { it.map { habitEntity -> habitEntity.toDomain() } }
+        return habitDao.getAllHabits().combine(isNewDay) { habits, isNewDay ->
+            if (isNewDay) habits.map { it.doneUnits = 0 }
+            habits.map { it.toDomain() }
+        }
     }
 
     override suspend fun saveHabit(habit: Habit) {

@@ -1,18 +1,15 @@
 package com.jkapps.htracker.data.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HabitDao {
 
     @Query("SELECT * FROM habits")
-    suspend fun getAllHabits() : Flow<List<HabitEntity>>
+    fun getAllHabits() : Flow<List<HabitEntity>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHabit(habit: HabitEntity)
 
     @Update

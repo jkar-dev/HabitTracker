@@ -8,5 +8,4 @@ interface HabitRepository {
     suspend fun getAllHabits() : Flow<List<Habit>>
     suspend fun saveHabit(habit: Habit)
     suspend fun updateHabit(habit: Habit)
-
 }

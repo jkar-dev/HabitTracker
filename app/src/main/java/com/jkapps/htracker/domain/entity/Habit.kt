@@ -2,7 +2,7 @@ package com.jkapps.htracker.domain.entity
 
 
 data class Habit(
-    val id: Int = -1,
+    val id: Int? = null,
     val title: String,
     val subtitle: String,
     val timesPerDay: Int,

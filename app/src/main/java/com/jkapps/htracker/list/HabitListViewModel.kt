@@ -1,5 +1,6 @@
 package com.jkapps.htracker.list
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -7,10 +8,11 @@ import com.jkapps.htracker.base.BaseViewModel
 import com.jkapps.htracker.list.HabitListAction.*
 import com.jkapps.htracker.list.HabitListAction.EffectOnHabits.*
 import com.jkapps.htracker.list.HabitListIntent.*
+import com.jkapps.htracker.list.HabitListResult.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class HabitListViewModel(private val actionProcessor: HabitListActionProcessor) :
+class HabitListViewModel @ViewModelInject constructor(private val actionProcessor: HabitListActionProcessor) :
     BaseViewModel<HabitListState, HabitListIntent, HabitListAction, HabitListResult>() {
 
     override val _state: MutableLiveData<HabitListState> = MutableLiveData(HabitListState.from)
@@ -30,9 +32,9 @@ class HabitListViewModel(private val actionProcessor: HabitListActionProcessor) 
 
     override fun reducer(result: HabitListResult, oldState: HabitListState): HabitListState {
         return when (result) {
-            is HabitListResult.NewHabitList -> oldState.copy(habits = result.habits)
-            is HabitListResult.OpenDialog -> oldState.copy(isDialogShowing = true)
-            is HabitListResult.CloseDialog -> oldState.copy(isDialogShowing = false)
+            is NewHabitList -> oldState.copy(habits = result.habits, isDialogShowing = false)
+            is OpenDialog -> oldState.copy(isDialogShowing = true)
+            is CloseDialog -> oldState.copy(isDialogShowing = false)
         }
     }
 
