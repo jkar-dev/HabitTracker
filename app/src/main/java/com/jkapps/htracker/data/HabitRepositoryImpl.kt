@@ -1,16 +1,23 @@
 package com.jkapps.htracker.data
 
+import com.jkapps.htracker.data.local.HabitDao
 import com.jkapps.htracker.domain.HabitRepository
 import com.jkapps.htracker.domain.entity.Habit
+import com.jkapps.utils.toDomain
+import com.jkapps.utils.toRoomEntity
+import kotlinx.coroutines.flow.*
 
-class HabitRepositoryImpl : HabitRepository {
-    private val habits = listOf(
-        Habit("Английский", "", 5, 2),
-        Habit("Английский", "Приложение", 5, 5),
-        Habit("Английский", "Приложение", 3, 0),
-        Habit("Английский", "Приложение", 1, 0))
+class HabitRepositoryImpl(private val habitDao: HabitDao) : HabitRepository {
 
-    override fun getAllHabits(): List<Habit> {
-        return habits
+    override suspend fun getAllHabits(): Flow<List<Habit>> {
+        return habitDao.getAllHabits().map { it.map { habitEntity -> habitEntity.toDomain() } }
+    }
+
+    override suspend fun saveHabit(habit: Habit) {
+        habitDao.insertHabit(habit.toRoomEntity())
+    }
+
+    override suspend fun updateHabit(habit: Habit) {
+        habitDao.updateHabit(habit.toRoomEntity())
     }
 }

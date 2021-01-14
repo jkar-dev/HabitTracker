@@ -1,41 +1,51 @@
 package com.jkapps.htracker.list
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.jkapps.htracker.base.BaseViewModel
-import com.jkapps.htracker.domain.HabitRepository
 import com.jkapps.htracker.list.HabitListAction.*
-import com.jkapps.htracker.list.HabitListEvent.*
+import com.jkapps.htracker.list.HabitListAction.EffectOnHabits.*
+import com.jkapps.htracker.list.HabitListIntent.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-class HabitListViewModel(private val repository: HabitRepository) :
-    BaseViewModel<HabitListState, HabitListEvent, HabitListAction, HabitListResult>() {
+class HabitListViewModel(private val actionProcessor: HabitListActionProcessor) :
+    BaseViewModel<HabitListState, HabitListIntent, HabitListAction, HabitListResult>() {
 
-    override val _state: MutableLiveData<HabitListState> = MutableLiveData(initialState())
+    override val _state: MutableLiveData<HabitListState> = MutableLiveData(HabitListState.from)
     override val state: LiveData<HabitListState> get() = _state
 
+    init {
+        dispatchIntent(InitialHabits)
+    }
+
     override fun handleAction(action: HabitListAction) {
-        Log.i("HabitListViewModel", "handle Action: action = $action")
-    }
-
-    override fun reducer(result: HabitListResult, oldState: HabitListState): HabitListState {
-        return oldState.copy()
-    }
-
-    override fun transformEventToAction(event: HabitListEvent): HabitListAction {
-        return when (event) {
-            is OnFabClick -> OpenAddEditDialog
-            is OnCardClick -> Nothing
-            is OnLongCardClick -> Nothing
-            is OnCircleClick -> MakeUnitDone(event.habit)
-            is OnLongCircleClick -> MakeUnitUndone(event.habit)
-            is OnDialogDismiss -> CloseAddEditDialog
-            is OnSaveHabit -> SaveHabit(event.habit)
+        viewModelScope.launch {
+            actionProcessor.transformActionToResult(action).collect {
+                _state.value = reducer(it, state.value!!)
+            }
         }
     }
 
-    override fun initialState(): HabitListState {
-        val habits = repository.getAllHabits()
-        return HabitListState(habits, false)
+    override fun reducer(result: HabitListResult, oldState: HabitListState): HabitListState {
+        return when (result) {
+            is HabitListResult.NewHabitList -> oldState.copy(habits = result.habits)
+            is HabitListResult.OpenDialog -> oldState.copy(isDialogShowing = true)
+            is HabitListResult.CloseDialog -> oldState.copy(isDialogShowing = false)
+        }
+    }
+
+    override fun transformIntentToAction(intent: HabitListIntent): HabitListAction {
+        return when (intent) {
+            is InitialHabits -> GetAllHabits
+            is OnFabClick -> OpenAddEditDialog
+            //is OnCardClick -> DoNothing
+            //is OnLongCardClick -> DoNothing
+            is OnCircleClick -> ChangeDoneUnits(intent.habit, true)
+            is OnLongCircleClick -> ChangeDoneUnits(intent.habit, false)
+            is OnDialogDismiss -> CloseAddEditDialog
+            is OnSaveHabit -> SaveHabit(intent.habit)
+        }
     }
 }

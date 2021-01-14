@@ -14,7 +14,7 @@ import com.jkapps.htracker.ui.list.ListScreen
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: HabitListViewModel by lazy {
-        ViewModelProvider(this, MyViewModelFactory()).get(HabitListViewModel::class.java)
+        ViewModelProvider(this).get(HabitListViewModel::class.java)
     }
 
     @ExperimentalFoundationApi

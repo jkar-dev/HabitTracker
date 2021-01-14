@@ -8,12 +8,15 @@ data class HabitListState(
     val habits : List<Habit>,
     val isDialogShowing : Boolean
 ) : BaseState {
-    val progress : Progress get() {
+
+    val progressPercentage : Int get() {
         var sumProgress = 0f
-        habits.forEach {
-            sumProgress += it.progressFraction
-        }
+        habits.forEach { sumProgress += it.progressFraction }
         val result = sumProgress/habits.size * 100
-        return Progress(result.toInt())
+        return result.toInt()
+    }
+
+    companion object {
+        val from = HabitListState(emptyList(), false)
     }
 }

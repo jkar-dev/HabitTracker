@@ -20,7 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jkapps.htracker.domain.entity.Habit
 import com.jkapps.htracker.domain.entity.Progress
-import com.jkapps.htracker.list.HabitListEvent
+import com.jkapps.htracker.list.HabitListIntent
+import com.jkapps.htracker.list.HabitListState
 import com.jkapps.htracker.list.HabitListViewModel
 import com.jkapps.htracker.ui.*
 
@@ -29,21 +30,21 @@ import com.jkapps.htracker.ui.*
 fun ListScreen(
     viewModel: HabitListViewModel
 ) {
-    val state = viewModel.state.observeAsState()
+    val state = viewModel.state.observeAsState(HabitListState.from)
     Scaffold(
-        topBar = { Toolbar(state.value!!.progress) },
+        topBar = { Toolbar(state.value.progressPercentage) },
         bodyContent = {
             BodyContent(
-                habits = state.value!!.habits,
-                isDialogShowing = state.value!!.isDialogShowing,
-                onCardClick = { viewModel.dispatchEvent(HabitListEvent.OnCardClick(it)) },
-                onLongCardClick = { viewModel.dispatchEvent(HabitListEvent.OnLongCardClick(it)) },
-                onCircleClick = { viewModel.dispatchEvent(HabitListEvent.OnCircleClick(it)) },
-                onLongCircleClick = { viewModel.dispatchEvent(HabitListEvent.OnLongCircleClick(it)) },
-                onDialogDismiss = { viewModel.dispatchEvent(HabitListEvent.OnDialogDismiss) })
+                habits = state.value.habits,
+                isDialogShowing = state.value.isDialogShowing,
+                onCardClick = {  },
+                onLongCardClick = {  },
+                onCircleClick = { viewModel.dispatchIntent(HabitListIntent.OnCircleClick(it)) },
+                onLongCircleClick = { viewModel.dispatchIntent(HabitListIntent.OnLongCircleClick(it)) },
+                onDialogDismiss = { viewModel.dispatchIntent(HabitListIntent.OnDialogDismiss) })
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { viewModel.dispatchEvent(HabitListEvent.OnFabClick) }) {
+            FloatingActionButton(onClick = { viewModel.dispatchIntent(HabitListIntent.OnFabClick) }) {
                 Icon(imageVector = Icons.Filled.Add)
             }
         }
@@ -51,7 +52,7 @@ fun ListScreen(
 }
 
 @Composable
-fun Toolbar(progress: Progress) {
+fun Toolbar(progressPercentage: Int) {
     TopAppBar(
         backgroundColor = Color.White,
         elevation = 4.dp
@@ -60,7 +61,7 @@ fun Toolbar(progress: Progress) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.align(Alignment.CenterVertically)
         ) {
-            Text(text = "${progress.percentage}%", color = Color.Black, fontSize = 14.sp)
+            Text(text = "${progressPercentage}%", color = Color.Black, fontSize = 14.sp)
             Spacer(modifier = Modifier.preferredHeight(4.dp))
             Box(
                 modifier = Modifier
