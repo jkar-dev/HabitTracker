@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jkapps.htracker.domain.entity.Habit
-import com.jkapps.htracker.domain.entity.Progress
 import com.jkapps.htracker.list.HabitListIntent
 import com.jkapps.htracker.list.HabitListState
 import com.jkapps.htracker.list.HabitListViewModel
@@ -37,10 +36,11 @@ fun ListScreen(
             BodyContent(
                 habits = state.value.habits,
                 isDialogShowing = state.value.isDialogShowing,
-                onCardClick = {  },
-                onLongCardClick = {  },
+                onCardClick = { },
+                onLongCardClick = { },
                 onCircleClick = { viewModel.dispatchIntent(HabitListIntent.OnCircleClick(it)) },
                 onLongCircleClick = { viewModel.dispatchIntent(HabitListIntent.OnLongCircleClick(it)) },
+                onSaveClick = { viewModel.dispatchIntent(HabitListIntent.OnSaveHabit(it)) },
                 onDialogDismiss = { viewModel.dispatchIntent(HabitListIntent.OnDialogDismiss) })
         },
         floatingActionButton = {
@@ -93,6 +93,7 @@ fun BodyContent(
     onLongCardClick: (Habit) -> Unit,
     onCircleClick: (Habit) -> Unit,
     onLongCircleClick: (Habit) -> Unit,
+    onSaveClick: (Habit) -> Unit,
     onDialogDismiss: () -> Unit
 ) {
     HabitList(
@@ -104,7 +105,7 @@ fun BodyContent(
     )
 
     if (isDialogShowing) {
-        AddHabitDialog(onDismissRequest = onDialogDismiss)
+        AddHabitDialog(onSaveClick = onSaveClick, onDismissRequest = onDialogDismiss)
     }
 }
 

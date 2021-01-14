@@ -82,6 +82,9 @@ private fun ProgressCircle(
     onCircleClick: (Habit) -> Unit,
     onLongCircleClick: (Habit) -> Unit
 ) {
+    val onCLick = { if (!habit.isComplete) onCircleClick.invoke(habit) }
+    val onLongClick = { if (habit.doneUnits != 0) onLongCircleClick.invoke(habit) }
+    
     WithConstraints {
         Box(
             contentAlignment = Alignment.Center
@@ -91,8 +94,8 @@ private fun ProgressCircle(
                     .padding(2.dp)
                     .size(maxWidth / 2)
                     .clickable(
-                        onClick = { onCircleClick.invoke(habit) },
-                        onLongClick = { onLongCircleClick.invoke(habit) },
+                        onClick = onCLick,
+                        onLongClick = onLongClick,
                         indication = null
                     )
             ) {

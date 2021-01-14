@@ -1,6 +1,5 @@
 package com.jkapps.htracker.ui.list
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -14,9 +13,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.jkapps.htracker.domain.entity.Habit
 
 @Composable
-fun AddHabitDialog(onDismissRequest: () -> Unit) {
+fun AddHabitDialog(onSaveClick: (Habit) -> Unit, onDismissRequest: () -> Unit) {
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
             modifier = Modifier.fillMaxWidth().padding(5.dp),
@@ -43,25 +43,35 @@ fun AddHabitDialog(onDismissRequest: () -> Unit) {
                 val sliderPosition = remember { mutableStateOf(1f) }
                 TimesPerDay(sliderPosition = sliderPosition)
                 Spacer(modifier = Modifier.preferredHeight(10.dp))
-                Buttons()
+                Buttons(
+                    onSaveClick = {
+                        val habit = Habit(
+                            title = title.value,
+                            subtitle = description.value,
+                            timesPerDay = sliderPosition.value.toInt()
+                        )
+                        onSaveClick.invoke(habit)
+                    },
+                    onCancelClick = onDismissRequest
+                )
             }
         }
     }
 }
 
 @Composable
-fun Buttons() {
+fun Buttons(onSaveClick: () -> Unit, onCancelClick: () -> Unit) {
     Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
         TextButton(
-            onClick = {}
+            onClick = onCancelClick
         ) {
             Text(text = "CANCEL", fontSize = 16.sp)
         }
         Spacer(modifier = Modifier.preferredWidth(10.dp))
         TextButton(
-            onClick = {},
+            onClick = onSaveClick,
         ) {
-            Text(text = "SAVE", fontSize = 16.sp, )
+            Text(text = "SAVE", fontSize = 16.sp)
         }
     }
 }
