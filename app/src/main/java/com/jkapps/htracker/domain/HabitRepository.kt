@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface HabitRepository {
 
-    suspend fun getAllHabits() : Flow<List<Habit>>
+    val allHabits : Flow<List<Habit>>
     suspend fun saveHabit(habit: Habit)
     suspend fun updateHabit(habit: Habit)
 }

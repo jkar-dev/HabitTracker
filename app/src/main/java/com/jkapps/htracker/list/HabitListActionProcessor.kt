@@ -1,5 +1,6 @@
 package com.jkapps.htracker.list
 
+import android.util.Log
 import com.jkapps.htracker.domain.HabitRepository
 import com.jkapps.htracker.domain.entity.Habit
 import com.jkapps.htracker.list.HabitListAction.*
@@ -7,9 +8,11 @@ import com.jkapps.htracker.list.HabitListResult.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class HabitListActionProcessor @Inject constructor(private val repository: HabitRepository) {
+    private val allHabits : Flow<List<Habit>> = repository.allHabits
 
     suspend fun transformActionToResult(action: HabitListAction): Flow<HabitListResult> {
         return when (action) {
@@ -22,16 +25,18 @@ class HabitListActionProcessor @Inject constructor(private val repository: Habit
     private suspend fun effectOnHabits(action: EffectOnHabits): Flow<HabitListResult> {
         when (action) {
             is EffectOnHabits.GetAllHabits -> { }
-            is EffectOnHabits.ChangeDoneUnits -> changeDoneUnits(action.habit, action.makeUnitDone)
+            is EffectOnHabits.TryToChangeDoneUnits -> tryToChangeDoneUnits(action.habit, action.makeUnitDone)
             is EffectOnHabits.SaveHabit -> saveHabit(action.habit)
         }
-        return repository.getAllHabits().map { NewHabitList(it) }
+        return allHabits.map { NewHabitList(it) }
     }
 
-    private suspend fun changeDoneUnits(habit: Habit, makeUnitDone: Boolean) {
+    private suspend fun tryToChangeDoneUnits(habit: Habit, makeUnitDone: Boolean) {
         val doneUnits = if (makeUnitDone) habit.doneUnits + 1 else habit.doneUnits - 1
-        val newHabit = habit.copy(doneUnits = doneUnits)
-        repository.updateHabit(newHabit)
+        if (doneUnits in 0..habit.timesPerDay) {
+            val newHabit = habit.copy(doneUnits = doneUnits)
+            repository.updateHabit(newHabit)
+        }
     }
 
     private suspend fun saveHabit(habit: Habit) {

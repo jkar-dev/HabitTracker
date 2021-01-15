@@ -9,10 +9,13 @@ import com.jkapps.htracker.list.HabitListAction.*
 import com.jkapps.htracker.list.HabitListAction.EffectOnHabits.*
 import com.jkapps.htracker.list.HabitListIntent.*
 import com.jkapps.htracker.list.HabitListResult.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HabitListViewModel @ViewModelInject constructor(private val actionProcessor: HabitListActionProcessor) :
+@HiltViewModel
+class HabitListViewModel @Inject constructor(private val actionProcessor: HabitListActionProcessor) :
     BaseViewModel<HabitListState, HabitListIntent, HabitListAction, HabitListResult>() {
 
     override val _state: MutableLiveData<HabitListState> = MutableLiveData(HabitListState.from)
@@ -44,8 +47,8 @@ class HabitListViewModel @ViewModelInject constructor(private val actionProcesso
             is OnFabClick -> OpenAddEditDialog
             //is OnCardClick -> DoNothing
             //is OnLongCardClick -> DoNothing
-            is OnCircleClick -> ChangeDoneUnits(intent.habit, true)
-            is OnLongCircleClick -> ChangeDoneUnits(intent.habit, false)
+            is OnCircleClick -> TryToChangeDoneUnits(intent.habit, true)
+            is OnLongCircleClick -> TryToChangeDoneUnits(intent.habit, false)
             is OnDialogDismiss -> CloseAddEditDialog
             is OnSaveHabit -> SaveHabit(intent.habit)
         }

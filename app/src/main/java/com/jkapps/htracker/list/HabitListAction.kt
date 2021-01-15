@@ -7,7 +7,7 @@ sealed class HabitListAction : BaseAction {
 
     sealed class EffectOnHabits : HabitListAction() {
         object GetAllHabits : EffectOnHabits()
-        data class ChangeDoneUnits(val habit: Habit, val makeUnitDone : Boolean) : EffectOnHabits()
+        data class TryToChangeDoneUnits(val habit: Habit, val makeUnitDone : Boolean) : EffectOnHabits()
         data class SaveHabit(val habit: Habit) : EffectOnHabits()
     }
     // object DoNothing : HabitListAction() // mock
