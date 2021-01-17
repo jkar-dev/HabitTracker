@@ -1,5 +1,6 @@
 package com.jkapps.htracker.ui.list
 
+import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.AmbientConfiguration
 import androidx.compose.ui.unit.dp
 import com.jkapps.htracker.domain.entity.Habit
 import com.jkapps.htracker.list.HabitListIntent
@@ -77,8 +79,10 @@ fun HabitList(
     onCircleClick: (Habit) -> Unit,
     onLongCircleClick: (Habit) -> Unit
 ) {
+    val orientation = AmbientConfiguration.current.orientation
+    val cells = if (orientation == Configuration.ORIENTATION_PORTRAIT) 2 else 4
     LazyVerticalGrid(
-        cells = GridCells.Fixed(2),
+        cells = GridCells.Fixed(cells),
         contentPadding = PaddingValues(6.dp)
     ) {
         items(habits) { habit ->

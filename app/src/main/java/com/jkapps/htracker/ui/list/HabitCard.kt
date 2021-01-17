@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.WithConstraints
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jkapps.htracker.domain.entity.Habit
@@ -32,7 +33,7 @@ fun HabitCard(
     WithConstraints {
         Card(
             backgroundColor = MaterialTheme.colors.surface,
-            elevation = 4.dp,
+            elevation = 2.dp,
             modifier = Modifier
                 .size(maxWidth)
                 .padding(6.dp)
@@ -57,25 +58,35 @@ private fun CardContent(
     onLongCircleClick: (Habit) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+        modifier = Modifier.fillMaxSize().padding(top = 12.dp, bottom = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Center
     ) {
         ProgressCircle(habit, onCircleClick, onLongCircleClick)
-        Spacer(modifier = Modifier.preferredHeight(12.dp))
-
-        Text(
-            text = habit.title,
-            color = MaterialTheme.colors.onSurface,
-            fontSize = 16.sp
-        )
-
-        if (habit.subtitle.isNotEmpty())
+        Spacer(modifier = Modifier.preferredWidth(16.dp))
+        Column(
+            modifier = Modifier.fillMaxHeight().padding(horizontal = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
             Text(
-                text = habit.subtitle,
-                color = MaterialTheme.colors.onSurfaceVariant,
-                fontSize = 14.sp
+                text = habit.title,
+                color = MaterialTheme.colors.onSurface,
+                fontSize = 16.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Clip
             )
+
+            if (habit.subtitle.isNotBlank())
+                Text(
+                    text = habit.subtitle,
+                    color = MaterialTheme.colors.onSurfaceVariant,
+                    fontSize = 14.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Clip
+                )
+        }
+
     }
 }
 

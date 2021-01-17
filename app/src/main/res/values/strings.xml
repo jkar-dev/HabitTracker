@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Habit Tracker</string>
+    <string name="cancel">CANCEL</string>
+    <string name="save">SAVE</string>
+    <string name="add_habit">Add habit</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="times_per_day">Times per day:</string>
 </resources>

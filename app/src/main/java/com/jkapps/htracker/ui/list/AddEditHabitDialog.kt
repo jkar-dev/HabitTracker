@@ -8,10 +8,12 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.jkapps.htracker.R
 import com.jkapps.htracker.domain.entity.Habit
 
 @Composable
@@ -49,8 +51,8 @@ fun AddHabitDialog(onSaveClick: (Habit) -> Unit, onDismissRequest: () -> Unit) {
                         }
 
                         val habit = Habit(
-                            title = title.value,
-                            subtitle = description.value,
+                            title = title.value.trim(),
+                            subtitle = description.value.trim(),
                             timesPerDay = sliderPosition.value.toInt()
                         )
                         onSaveClick.invoke(habit)
@@ -68,13 +70,13 @@ fun Buttons(onSaveClick: () -> Unit, onCancelClick: () -> Unit) {
         TextButton(
             onClick = onCancelClick
         ) {
-            Text(text = "CANCEL", fontSize = 16.sp)
+            Text(text = stringResource(R.string.cancel), fontSize = 16.sp)
         }
         Spacer(modifier = Modifier.preferredWidth(10.dp))
         TextButton(
             onClick = onSaveClick,
         ) {
-            Text(text = "SAVE", fontSize = 16.sp)
+            Text(text = stringResource(R.string.save), fontSize = 16.sp)
         }
     }
 }
@@ -83,7 +85,7 @@ fun Buttons(onSaveClick: () -> Unit, onCancelClick: () -> Unit) {
 @Composable
 fun Header() {
     Text(
-        text = "Добавить привычку", fontSize = 20.sp,
+        text = stringResource(R.string.add_habit), fontSize = 20.sp,
         fontWeight = FontWeight.Bold
     )
 }
@@ -96,7 +98,7 @@ fun TitleInput(title: MutableState<String>, isError: MutableState<Boolean>) {
             title.value = it
             if (it.isNotBlank()) isError.value = false
         },
-        label = { Text(text = "Название") },
+        label = { Text(text = stringResource(R.string.title)) },
         isErrorValue = isError.value
     )
 }
@@ -106,14 +108,14 @@ fun DescriptionInput(description: MutableState<String>) {
     OutlinedTextField(
         value = description.value,
         onValueChange = { description.value = it },
-        label = { Text(text = "Описание") }
+        label = { Text(text = stringResource(R.string.description)) }
     )
 }
 
 @Composable
 fun TimesPerDay(sliderPosition: MutableState<Float>) {
     Text(
-        "Количество повторений в день:",
+        stringResource(R.string.times_per_day),
         modifier = Modifier.padding(vertical = 8.dp, horizontal = 6.dp)
     )
 
