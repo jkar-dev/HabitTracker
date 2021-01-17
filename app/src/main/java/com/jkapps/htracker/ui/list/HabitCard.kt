@@ -1,22 +1,26 @@
 package com.jkapps.htracker.ui.list
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.WithConstraints
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jkapps.htracker.domain.entity.Habit
+import com.jkapps.htracker.ui.doneUnit
+import com.jkapps.htracker.ui.notDoneUnit
+import com.jkapps.htracker.ui.onSurfaceVariant
 
 @Composable
 fun HabitCard(
@@ -28,8 +32,8 @@ fun HabitCard(
 ) {
     WithConstraints {
         Card(
-            backgroundColor = Color.White,
-            elevation = 4.dp,
+            backgroundColor = MaterialTheme.colors.surface,
+            elevation = 2.dp,
             modifier = Modifier
                 .size(maxWidth)
                 .padding(6.dp)
@@ -54,25 +58,35 @@ private fun CardContent(
     onLongCircleClick: (Habit) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+        modifier = Modifier.fillMaxSize().padding(top = 12.dp, bottom = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Center
     ) {
         ProgressCircle(habit, onCircleClick, onLongCircleClick)
-        Spacer(modifier = Modifier.preferredHeight(12.dp))
-
-        Text(
-            text = habit.title,
-            color = Color.Black,
-            fontSize = 16.sp
-        )
-
-        if (habit.subtitle.isNotEmpty())
+        Spacer(modifier = Modifier.preferredWidth(16.dp))
+        Column(
+            modifier = Modifier.fillMaxHeight().padding(horizontal = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
             Text(
-                text = habit.subtitle,
-                color = Color.Gray,
-                fontSize = 14.sp
+                text = habit.title,
+                color = MaterialTheme.colors.onSurface,
+                fontSize = 16.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Clip
             )
+
+            if (habit.subtitle.isNotBlank())
+                Text(
+                    text = habit.subtitle,
+                    color = MaterialTheme.colors.onSurfaceVariant,
+                    fontSize = 14.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Clip
+                )
+        }
+
     }
 }
 
@@ -82,6 +96,9 @@ private fun ProgressCircle(
     onCircleClick: (Habit) -> Unit,
     onLongCircleClick: (Habit) -> Unit
 ) {
+    val colorDone = MaterialTheme.colors.doneUnit
+    val colorNotDone = MaterialTheme.colors.notDoneUnit
+
     WithConstraints {
         Box(
             contentAlignment = Alignment.Center
@@ -102,7 +119,7 @@ private fun ProgressCircle(
                 val sweepAngle = fullSweepAngle - 2 * anglePadding
 
                 for (i in 1..habit.timesPerDay) {
-                    val color = if (i <= habit.doneUnits) Color.Blue else Color.LightGray
+                    val color = if (i <= habit.doneUnits) colorDone else colorNotDone
                     drawArc(
                         color = color,
                         startAngle = startAngle,
@@ -114,10 +131,13 @@ private fun ProgressCircle(
                     startAngle += fullSweepAngle
                 }
             }
+            val iconSize = maxWidth / 3
             if (habit.isComplete)
-                Image(
-                    imageVector = Icons.Filled.Done,
-                    modifier = Modifier.size(maxWidth / 3)
+                Icon(
+                    imageVector = Icons.Filled.Done.copy(
+                        defaultHeight = iconSize,
+                        defaultWidth = iconSize
+                    )
                 )
             else
                 Text(

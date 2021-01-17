@@ -1,6 +1,5 @@
 package com.jkapps.htracker.ui.list
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -9,19 +8,20 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.jkapps.htracker.R
+import com.jkapps.htracker.domain.entity.Habit
 
 @Composable
-fun AddHabitDialog(onDismissRequest: () -> Unit) {
+fun AddHabitDialog(onSaveClick: (Habit) -> Unit, onDismissRequest: () -> Unit) {
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
             modifier = Modifier.fillMaxWidth().padding(5.dp),
-            shape = RoundedCornerShape(4.dp),
-            color = Color.White,
+            shape = RoundedCornerShape(4.dp)
         ) {
             Column(
                 modifier = Modifier
@@ -43,25 +43,40 @@ fun AddHabitDialog(onDismissRequest: () -> Unit) {
                 val sliderPosition = remember { mutableStateOf(1f) }
                 TimesPerDay(sliderPosition = sliderPosition)
                 Spacer(modifier = Modifier.preferredHeight(10.dp))
-                Buttons()
+                Buttons(
+                    onSaveClick = {
+                        if (title.value.isBlank()) {
+                            isError.value = true
+                            return@Buttons
+                        }
+
+                        val habit = Habit(
+                            title = title.value.trim(),
+                            subtitle = description.value.trim(),
+                            timesPerDay = sliderPosition.value.toInt()
+                        )
+                        onSaveClick.invoke(habit)
+                    },
+                    onCancelClick = onDismissRequest
+                )
             }
         }
     }
 }
 
 @Composable
-fun Buttons() {
+fun Buttons(onSaveClick: () -> Unit, onCancelClick: () -> Unit) {
     Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
         TextButton(
-            onClick = {}
+            onClick = onCancelClick
         ) {
-            Text(text = "CANCEL", fontSize = 16.sp)
+            Text(text = stringResource(R.string.cancel), fontSize = 16.sp)
         }
         Spacer(modifier = Modifier.preferredWidth(10.dp))
         TextButton(
-            onClick = {},
+            onClick = onSaveClick,
         ) {
-            Text(text = "SAVE", fontSize = 16.sp, )
+            Text(text = stringResource(R.string.save), fontSize = 16.sp)
         }
     }
 }
@@ -70,9 +85,8 @@ fun Buttons() {
 @Composable
 fun Header() {
     Text(
-        text = "Добавить привычку", fontSize = 20.sp,
-        fontWeight = FontWeight.Bold,
-        color = Color.Black
+        text = stringResource(R.string.add_habit), fontSize = 20.sp,
+        fontWeight = FontWeight.Bold
     )
 }
 
@@ -80,8 +94,11 @@ fun Header() {
 fun TitleInput(title: MutableState<String>, isError: MutableState<Boolean>) {
     OutlinedTextField(
         value = title.value,
-        onValueChange = { title.value = it },
-        label = { Text(text = "Название") },
+        onValueChange = {
+            title.value = it
+            if (it.isNotBlank()) isError.value = false
+        },
+        label = { Text(text = stringResource(R.string.title)) },
         isErrorValue = isError.value
     )
 }
@@ -91,16 +108,17 @@ fun DescriptionInput(description: MutableState<String>) {
     OutlinedTextField(
         value = description.value,
         onValueChange = { description.value = it },
-        label = { Text(text = "Описание") }
+        label = { Text(text = stringResource(R.string.description)) }
     )
 }
 
 @Composable
 fun TimesPerDay(sliderPosition: MutableState<Float>) {
     Text(
-        "Количество повторений в день:",
+        stringResource(R.string.times_per_day),
         modifier = Modifier.padding(vertical = 8.dp, horizontal = 6.dp)
     )
+
     Slider(
         value = sliderPosition.value,
         onValueChange = { sliderPosition.value = it },
@@ -108,8 +126,8 @@ fun TimesPerDay(sliderPosition: MutableState<Float>) {
         valueRange = 1f..6f,
         modifier = Modifier.height(20.dp),
         activeTickColor = MaterialTheme.colors.primary,
-        activeTrackColor = Color.LightGray,
-        inactiveTrackColor = Color.LightGray,
+        activeTrackColor = MaterialTheme.colors.onSurface.copy(alpha = 0.13f),
+        inactiveTrackColor = MaterialTheme.colors.onSurface.copy(alpha = 0.13f),
         inactiveTickColor = MaterialTheme.colors.primary,
         thumbColor = MaterialTheme.colors.primary
     )

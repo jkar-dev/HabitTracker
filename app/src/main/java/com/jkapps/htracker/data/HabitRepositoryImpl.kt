@@ -1,16 +1,42 @@
 package com.jkapps.htracker.data
 
+import com.jkapps.htracker.data.local.room.HabitDao
+import com.jkapps.htracker.data.local.preferences.PreferenceDataStore
 import com.jkapps.htracker.domain.HabitRepository
 import com.jkapps.htracker.domain.entity.Habit
+import com.jkapps.htracker.utils.DateHelper
+import com.jkapps.htracker.utils.toDomain
+import com.jkapps.htracker.utils.toRoomEntity
+import kotlinx.coroutines.flow.*
+import timber.log.Timber
 
-class HabitRepositoryImpl : HabitRepository {
-    private val habits = listOf(
-        Habit("Английский", "", 5, 2),
-        Habit("Английский", "Приложение", 5, 5),
-        Habit("Английский", "Приложение", 3, 0),
-        Habit("Английский", "Приложение", 1, 0))
+class HabitRepositoryImpl(private val habitDao: HabitDao, private val preferences : PreferenceDataStore) : HabitRepository {
 
-    override fun getAllHabits(): List<Habit> {
-        return habits
+    private var isNewDay = preferences.lastSavedDate.map { it != DateHelper.currentDay }
+
+    override val allHabits: Flow<List<Habit>> =
+        habitDao.getAllHabits().combine(isNewDay) { habits, isNewDay ->
+            if (isNewDay) {
+                Timber.i("isNewDay = true")
+                preferences.saveDate(DateHelper.currentDay)
+                clearUnitsOfAllHabits()
+            }
+            habits.map { it.toDomain() }
+        }
+
+    override suspend fun saveHabit(habit: Habit) {
+        habitDao.insertHabit(habit.toRoomEntity())
+    }
+
+    override suspend fun updateHabit(habit: Habit) {
+        habitDao.updateHabit(habit.toRoomEntity())
+    }
+
+    override suspend fun deleteHabit(habit: Habit) {
+        habitDao.deleteHabit(habit.toRoomEntity())
+    }
+
+    override suspend fun clearUnitsOfAllHabits() {
+        habitDao.resetUnitsOfAllHabits()
     }
 }
