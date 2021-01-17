@@ -8,7 +8,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -20,8 +19,7 @@ fun AddHabitDialog(onSaveClick: (Habit) -> Unit, onDismissRequest: () -> Unit) {
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
             modifier = Modifier.fillMaxWidth().padding(5.dp),
-            shape = RoundedCornerShape(4.dp),
-            color = Color.White,
+            shape = RoundedCornerShape(4.dp)
         ) {
             Column(
                 modifier = Modifier
@@ -45,6 +43,11 @@ fun AddHabitDialog(onSaveClick: (Habit) -> Unit, onDismissRequest: () -> Unit) {
                 Spacer(modifier = Modifier.preferredHeight(10.dp))
                 Buttons(
                     onSaveClick = {
+                        if (title.value.isBlank()) {
+                            isError.value = true
+                            return@Buttons
+                        }
+
                         val habit = Habit(
                             title = title.value,
                             subtitle = description.value,
@@ -81,8 +84,7 @@ fun Buttons(onSaveClick: () -> Unit, onCancelClick: () -> Unit) {
 fun Header() {
     Text(
         text = "Добавить привычку", fontSize = 20.sp,
-        fontWeight = FontWeight.Bold,
-        color = Color.Black
+        fontWeight = FontWeight.Bold
     )
 }
 
@@ -90,7 +92,10 @@ fun Header() {
 fun TitleInput(title: MutableState<String>, isError: MutableState<Boolean>) {
     OutlinedTextField(
         value = title.value,
-        onValueChange = { title.value = it },
+        onValueChange = {
+            title.value = it
+            if (it.isNotBlank()) isError.value = false
+        },
         label = { Text(text = "Название") },
         isErrorValue = isError.value
     )
@@ -111,6 +116,7 @@ fun TimesPerDay(sliderPosition: MutableState<Float>) {
         "Количество повторений в день:",
         modifier = Modifier.padding(vertical = 8.dp, horizontal = 6.dp)
     )
+
     Slider(
         value = sliderPosition.value,
         onValueChange = { sliderPosition.value = it },
@@ -118,8 +124,8 @@ fun TimesPerDay(sliderPosition: MutableState<Float>) {
         valueRange = 1f..6f,
         modifier = Modifier.height(20.dp),
         activeTickColor = MaterialTheme.colors.primary,
-        activeTrackColor = Color.LightGray,
-        inactiveTrackColor = Color.LightGray,
+        activeTrackColor = MaterialTheme.colors.onSurface.copy(alpha = 0.13f),
+        inactiveTrackColor = MaterialTheme.colors.onSurface.copy(alpha = 0.13f),
         inactiveTickColor = MaterialTheme.colors.primary,
         thumbColor = MaterialTheme.colors.primary
     )

@@ -1,22 +1,25 @@
 package com.jkapps.htracker.ui.list
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.WithConstraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jkapps.htracker.domain.entity.Habit
+import com.jkapps.htracker.ui.doneUnit
+import com.jkapps.htracker.ui.notDoneUnit
+import com.jkapps.htracker.ui.onSurfaceVariant
 
 @Composable
 fun HabitCard(
@@ -28,7 +31,7 @@ fun HabitCard(
 ) {
     WithConstraints {
         Card(
-            backgroundColor = Color.White,
+            backgroundColor = MaterialTheme.colors.surface,
             elevation = 4.dp,
             modifier = Modifier
                 .size(maxWidth)
@@ -63,14 +66,14 @@ private fun CardContent(
 
         Text(
             text = habit.title,
-            color = Color.Black,
+            color = MaterialTheme.colors.onSurface,
             fontSize = 16.sp
         )
 
         if (habit.subtitle.isNotEmpty())
             Text(
                 text = habit.subtitle,
-                color = Color.Gray,
+                color = MaterialTheme.colors.onSurfaceVariant,
                 fontSize = 14.sp
             )
     }
@@ -82,9 +85,9 @@ private fun ProgressCircle(
     onCircleClick: (Habit) -> Unit,
     onLongCircleClick: (Habit) -> Unit
 ) {
-    val onCLick = { if (!habit.isComplete) onCircleClick.invoke(habit) }
-    val onLongClick = { if (habit.doneUnits != 0) onLongCircleClick.invoke(habit) }
-    
+    val colorDone = MaterialTheme.colors.doneUnit
+    val colorNotDone = MaterialTheme.colors.notDoneUnit
+
     WithConstraints {
         Box(
             contentAlignment = Alignment.Center
@@ -94,8 +97,8 @@ private fun ProgressCircle(
                     .padding(2.dp)
                     .size(maxWidth / 2)
                     .clickable(
-                        onClick = onCLick,
-                        onLongClick = onLongClick,
+                        onClick = { onCircleClick.invoke(habit) },
+                        onLongClick = { onLongCircleClick.invoke(habit) },
                         indication = null
                     )
             ) {
@@ -105,7 +108,7 @@ private fun ProgressCircle(
                 val sweepAngle = fullSweepAngle - 2 * anglePadding
 
                 for (i in 1..habit.timesPerDay) {
-                    val color = if (i <= habit.doneUnits) Color.Blue else Color.LightGray
+                    val color = if (i <= habit.doneUnits) colorDone else colorNotDone
                     drawArc(
                         color = color,
                         startAngle = startAngle,
@@ -117,10 +120,13 @@ private fun ProgressCircle(
                     startAngle += fullSweepAngle
                 }
             }
+            val iconSize = maxWidth / 3
             if (habit.isComplete)
-                Image(
-                    imageVector = Icons.Filled.Done,
-                    modifier = Modifier.size(maxWidth / 3)
+                Icon(
+                    imageVector = Icons.Filled.Done.copy(
+                        defaultHeight = iconSize,
+                        defaultWidth = iconSize
+                    )
                 )
             else
                 Text(

@@ -1,28 +1,19 @@
 package com.jkapps.htracker.ui.list
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.jkapps.htracker.domain.entity.Habit
 import com.jkapps.htracker.list.HabitListIntent
 import com.jkapps.htracker.list.HabitListState
 import com.jkapps.htracker.list.HabitListViewModel
-import com.jkapps.htracker.ui.*
 
 @ExperimentalFoundationApi
 @Composable
@@ -51,38 +42,6 @@ fun ListScreen(
     )
 }
 
-@Composable
-fun Toolbar(progressPercentage: Int) {
-    TopAppBar(
-        backgroundColor = Color.White,
-        elevation = 4.dp
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.align(Alignment.CenterVertically)
-        ) {
-            Text(text = "${progressPercentage}%", color = Color.Black, fontSize = 14.sp)
-            Spacer(modifier = Modifier.preferredHeight(4.dp))
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(4.dp))
-                    .preferredHeight(8.dp)
-                    .background(
-                        Brush.horizontalGradient(
-                            0f to red,
-                            1 / 6f to orange,
-                            2 / 6f to yellow,
-                            3 / 6f to green,
-                            4 / 6f to blue,
-                            5 / 6f to violet
-                        )
-                    )
-            )
-        }
-    }
-}
 
 @ExperimentalFoundationApi
 @Composable
