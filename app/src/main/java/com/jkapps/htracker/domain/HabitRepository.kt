@@ -8,4 +8,6 @@ interface HabitRepository {
     val allHabits : Flow<List<Habit>>
     suspend fun saveHabit(habit: Habit)
     suspend fun updateHabit(habit: Habit)
+    suspend fun deleteHabit(habit: Habit)
+    suspend fun clearUnitsOfAllHabits()
 }

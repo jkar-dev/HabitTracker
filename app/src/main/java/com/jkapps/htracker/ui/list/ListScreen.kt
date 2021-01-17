@@ -37,7 +37,7 @@ fun ListScreen(
                 habits = state.value.habits,
                 isDialogShowing = state.value.isDialogShowing,
                 onCardClick = { },
-                onLongCardClick = { },
+                onLongCardClick = { viewModel.dispatchIntent(HabitListIntent.OnLongCardClick(it)) },
                 onCircleClick = { viewModel.dispatchIntent(HabitListIntent.OnCircleClick(it)) },
                 onLongCircleClick = { viewModel.dispatchIntent(HabitListIntent.OnLongCircleClick(it)) },
                 onSaveClick = { viewModel.dispatchIntent(HabitListIntent.OnSaveHabit(it)) },

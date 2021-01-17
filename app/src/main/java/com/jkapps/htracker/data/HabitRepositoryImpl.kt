@@ -8,7 +8,7 @@ import com.jkapps.utils.DateHelper
 import com.jkapps.utils.toDomain
 import com.jkapps.utils.toRoomEntity
 import kotlinx.coroutines.flow.*
-import java.util.*
+import timber.log.Timber
 
 class HabitRepositoryImpl(private val habitDao: HabitDao, private val preferences : PreferenceDataStore) : HabitRepository {
 
@@ -17,8 +17,9 @@ class HabitRepositoryImpl(private val habitDao: HabitDao, private val preference
     override val allHabits: Flow<List<Habit>> =
         habitDao.getAllHabits().combine(isNewDay) { habits, isNewDay ->
             if (isNewDay) {
-                habits.map { it.doneUnits = 0 }
+                Timber.i("isNewDay = true")
                 preferences.saveDate(DateHelper.currentDay)
+                clearUnitsOfAllHabits()
             }
             habits.map { it.toDomain() }
         }
@@ -29,5 +30,13 @@ class HabitRepositoryImpl(private val habitDao: HabitDao, private val preference
 
     override suspend fun updateHabit(habit: Habit) {
         habitDao.updateHabit(habit.toRoomEntity())
+    }
+
+    override suspend fun deleteHabit(habit: Habit) {
+        habitDao.deleteHabit(habit.toRoomEntity())
+    }
+
+    override suspend fun clearUnitsOfAllHabits() {
+        habitDao.resetUnitsOfAllHabits()
     }
 }

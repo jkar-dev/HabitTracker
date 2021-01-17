@@ -15,4 +15,10 @@ interface HabitDao {
     @Update
     suspend fun updateHabit(habit : HabitEntity)
 
+    @Delete
+    suspend fun deleteHabit(habit: HabitEntity)
+
+    @Query("UPDATE habits SET doneUnits = 0")
+    suspend fun resetUnitsOfAllHabits()
+
 }

@@ -9,7 +9,7 @@ sealed class HabitListIntent : BaseIntent {
     object OnDialogDismiss : HabitListIntent()
     data class OnSaveHabit(val habit: Habit) : HabitListIntent()
     // data class OnCardClick(val habit : Habit) : HabitListIntent()
-    // data class OnLongCardClick(val habit : Habit) : HabitListIntent()
+    data class OnLongCardClick(val habit : Habit) : HabitListIntent()
     data class OnCircleClick(val habit : Habit) : HabitListIntent()
     data class OnLongCircleClick(val habit : Habit) : HabitListIntent()
 }

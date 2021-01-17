@@ -46,7 +46,7 @@ class HabitListViewModel @Inject constructor(private val actionProcessor: HabitL
             is InitialHabits -> GetAllHabits
             is OnFabClick -> OpenAddEditDialog
             //is OnCardClick -> DoNothing
-            //is OnLongCardClick -> DoNothing
+            is OnLongCardClick -> DeleteHabit(intent.habit)
             is OnCircleClick -> TryToChangeDoneUnits(intent.habit, true)
             is OnLongCircleClick -> TryToChangeDoneUnits(intent.habit, false)
             is OnDialogDismiss -> CloseAddEditDialog

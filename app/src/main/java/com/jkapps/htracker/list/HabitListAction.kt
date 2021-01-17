@@ -9,6 +9,7 @@ sealed class HabitListAction : BaseAction {
         object GetAllHabits : EffectOnHabits()
         data class TryToChangeDoneUnits(val habit: Habit, val makeUnitDone : Boolean) : EffectOnHabits()
         data class SaveHabit(val habit: Habit) : EffectOnHabits()
+        data class DeleteHabit(val habit: Habit) : EffectOnHabits()
     }
     // object DoNothing : HabitListAction() // mock
     object OpenAddEditDialog : HabitListAction()

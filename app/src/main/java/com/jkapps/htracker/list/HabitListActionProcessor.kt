@@ -27,6 +27,7 @@ class HabitListActionProcessor @Inject constructor(private val repository: Habit
             is EffectOnHabits.GetAllHabits -> { }
             is EffectOnHabits.TryToChangeDoneUnits -> tryToChangeDoneUnits(action.habit, action.makeUnitDone)
             is EffectOnHabits.SaveHabit -> saveHabit(action.habit)
+            is EffectOnHabits.DeleteHabit -> deleteHabit(action.habit)
         }
         return allHabits.map { NewHabitList(it) }
     }
@@ -41,5 +42,9 @@ class HabitListActionProcessor @Inject constructor(private val repository: Habit
 
     private suspend fun saveHabit(habit: Habit) {
         repository.saveHabit(habit)
+    }
+
+    private suspend fun deleteHabit(habit: Habit) {
+        repository.deleteHabit(habit)
     }
 }
