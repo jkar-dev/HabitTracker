@@ -1,7 +1,6 @@
 package com.jkapps.htracker.list
 
 import com.jkapps.htracker.domain.entity.Habit
-import com.jkapps.htracker.domain.entity.Progress
 import com.jkapps.htracker.domain.mvi.BaseState
 
 data class HabitListState(
@@ -10,9 +9,11 @@ data class HabitListState(
 ) : BaseState {
 
     val progressPercentage : Int get() {
+        if (habits.isEmpty()) return 0
+
         var sumProgress = 0f
         habits.forEach { sumProgress += it.progressFraction }
-        val result = sumProgress/habits.size * 100
+        val result = sumProgress/ habits.size * 100
         return result.toInt()
     }
 

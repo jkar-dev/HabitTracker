@@ -1,6 +1,6 @@
-package com.jkapps.utils
+package com.jkapps.htracker.utils
 
-import com.jkapps.htracker.data.local.HabitEntity
+import com.jkapps.htracker.data.local.room.HabitEntity
 import com.jkapps.htracker.domain.entity.Habit
 
 fun Habit.toRoomEntity() : HabitEntity {

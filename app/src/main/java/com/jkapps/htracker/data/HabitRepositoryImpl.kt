@@ -1,12 +1,12 @@
 package com.jkapps.htracker.data
 
-import com.jkapps.htracker.data.local.HabitDao
+import com.jkapps.htracker.data.local.room.HabitDao
 import com.jkapps.htracker.data.local.preferences.PreferenceDataStore
 import com.jkapps.htracker.domain.HabitRepository
 import com.jkapps.htracker.domain.entity.Habit
-import com.jkapps.utils.DateHelper
-import com.jkapps.utils.toDomain
-import com.jkapps.utils.toRoomEntity
+import com.jkapps.htracker.utils.DateHelper
+import com.jkapps.htracker.utils.toDomain
+import com.jkapps.htracker.utils.toRoomEntity
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
 

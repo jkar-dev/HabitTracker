@@ -2,7 +2,7 @@ package com.jkapps.htracker.di
 
 import android.content.Context
 import com.jkapps.htracker.data.HabitRepositoryImpl
-import com.jkapps.htracker.data.local.HabitDao
+import com.jkapps.htracker.data.local.room.HabitDao
 import com.jkapps.htracker.data.local.preferences.PreferenceDataStore
 import com.jkapps.htracker.domain.HabitRepository
 import dagger.Module

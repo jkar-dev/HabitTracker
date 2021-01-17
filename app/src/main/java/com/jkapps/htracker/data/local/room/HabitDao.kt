@@ -1,4 +1,4 @@
-package com.jkapps.htracker.data.local
+package com.jkapps.htracker.data.local.room
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow

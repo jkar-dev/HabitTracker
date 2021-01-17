@@ -2,8 +2,8 @@ package com.jkapps.htracker.di
 
 import android.content.Context
 import androidx.room.Room
-import com.jkapps.htracker.data.local.AppDatabase
-import com.jkapps.htracker.data.local.HabitDao
+import com.jkapps.htracker.data.local.room.AppDatabase
+import com.jkapps.htracker.data.local.room.HabitDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,7 +17,7 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext context: Context) : AppDatabase     {
+    fun provideDatabase(@ApplicationContext context: Context) : AppDatabase {
         return Room.databaseBuilder(context, AppDatabase::class.java, "habit_app.db").build()
     }
 
