@@ -84,4 +84,7 @@ dependencies {
 
     // Preference Data Store
     implementation "androidx.datastore:datastore-preferences:1.0.0-alpha01"
+
+    // Logging
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 }
